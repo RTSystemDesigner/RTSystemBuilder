@@ -1,0 +1,123 @@
+syntax = "proto3";
+
+package RTSystemBuilder.v1;
+
+option csharp_namespace = "RTSystemBuilder";
+
+/**
+  * サービスインターフェース情報を設定/取得するためのパラメータ
+  */
+message ServiceInterfaceInfo {
+  string name = 1;				// インターフェース名
+  uint32 direction = 2;			// 方向(1:Provided, 2:Required)
+  string interface_type = 3;	// インターフェース型
+}
+
+/**
+  * サービスポート情報を設定/取得するためのパラメータ
+  */
+message ServicePortInfo {
+  string name = 1;								// サービスポート名
+  repeated ServiceInterfaceInfo interfaces = 2;	// サービスインターフェース情報
+}
+
+/**
+  * データポート情報を設定/取得するためのパラメータ
+  */
+message DataPortInfo {
+  string name = 1;				// データポート名
+  string type = 2;				// データポート型
+  uint32 direction = 3;			// 方向(1:In, 2:Out)
+}
+
+/**
+  * カテゴリ情報を設定/取得するためのパラメータ
+  */
+message CategoryInfo {
+  string name = 1;				// カテゴリ名
+  uint32 parent_id = 2;			// 親カテゴリのID
+}
+
+/**
+  * コンポーネント情報を設定/取得するためのパラメータ
+  */
+message ComponentInfo {
+  uint64 id = 1;								// コンポーネントId
+  string name = 2;								// DB登録名
+  string component_name = 3;					// コンポーネント名
+  string vendor = 4;							// ベンダ名
+  uint32 language = 5;							// 実装言語(1:C++, 2:Python, 3:Java)
+  string repository = 6;						// 対象コンポーネントが格納されているリポジトリのURI
+  string comment = 7;							// コメント
+  repeated CategoryInfo categories = 8;			// カテゴリ情報
+  repeated DataPortInfo data_ports = 9;			// データポート情報
+  repeated ServicePortInfo service_ports = 10;	// サービスポート情報
+}
+
+/**
+  * コンポーネント情報を登録するためのパラメータ
+  */
+message ComponentRegistRequest {
+  ComponentInfo component = 1;	// コンポーネント情報
+}
+
+/**
+  * コンポーネント情報を検索するためのパラメータ
+  */
+message ComponentSearchRequest {
+  repeated string names = 1;							// 登録名に対する検索ワード
+  bool names_or = 2;  									// 登録名の検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated string categories = 3;						// カテゴリに対する検索ワード
+  bool categories_or = 4;  								// カテゴリの検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated string vendors = 5;							// ベンダに対する検索ワード
+  bool vendors_or = 6;  								// ベンダの検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated uint32 languages = 7;						// 実装言語の検索条件．Or検索
+  repeated string comments = 8;							// 登録名に対する検索ワード
+  bool comments_or = 9;  								// 登録名の検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated string data_port_types = 10;					// データポートのデータ型に対する検索ワード
+  bool data_port_type_or = 11;  						// データポートデータ型の検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated uint32 data_port_directions = 12;			// データポートの方向の検索条件．
+  repeated string service_interface_types = 13;			// サービスインターフェースのインターフェース型に対する検索ワード
+  bool service_interface_type_or = 14;					// サービスインターフェースのインターフェース型の検索条件.Falseの場合はAnd検索，Falseの場合はOr検索
+  repeated uint32 service_interface_directions = 15;	// サービスインターフェースの方向の検索条件．
+}
+
+/**
+  * コンポーネント情報の検索結果を受け渡すためのパラメータ
+  */
+message ComponentSearchResponse {
+  repeated ComponentInfo results = 1;			// コンポーネント情報の検索結果
+}
+
+/**
+  * コンポーネント情報を更新するためのパラメータ
+  */
+message ComponentUpdateRequest {
+  uint64 component_id = 1;		// 更新対象のコンポーネントのID
+  bool update_detail = 2;  		// 詳細情報更新フラグ.Trueの場合には，登録されているコンポーネント情報を更新する．Falseの場合には，登録名とコメントのみ更新する
+  ComponentInfo component = 3;	// コンポーネント情報
+}
+
+/**
+  * コンポーネント情報を削除するためのパラメータ
+  */
+message ComponentDeleteRequest {
+  uint64 component_id = 1;	// 削除対象のコンポーネントのID
+}
+
+message StatusResponse {
+  uint32 status = 1;	// 実行結果
+  string message = 2;	// エラー情報
+}
+
+/////
+service ComponentDatabaseService {
+  // コンポーネントを登録する
+  rpc RegistComponent (ComponentRegistRequest) returns (StatusResponse) {}
+  // コンポーネント情報を検索する
+  rpc SearchComponent (ComponentSearchRequest) returns (ComponentSearchResponse) {}
+  // コンポーネント情報を更新する
+  rpc UpdateComponent (ComponentUpdateRequest) returns (StatusResponse) {}
+  // コンポーネント情報を削除する
+  rpc DeleteComponent (ComponentDeleteRequest) returns (StatusResponse) {}
+}
