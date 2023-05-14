@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package RTSystemBuilder.v1;
+package component_db.v1;
 
 option csharp_namespace = "RTSystemBuilder";
 
