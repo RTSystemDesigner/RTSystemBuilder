@@ -66,7 +66,10 @@ class ComponentDatabaseServiceManager(ComponentDB_pb2_grpc.ComponentDatabaseServ
       t_component.vendor = param_comp['vendor']
       t_component.language = param_comp['language']
       t_component.repository = param_comp['repository']
-      t_component.comment = param_comp['comment']
+      comment = ''
+      if 'comment' in param_comp.keys():
+        comment = param_comp['comment']
+      t_component.comment = comment
 
       session.add(t_component)
       session.commit()
