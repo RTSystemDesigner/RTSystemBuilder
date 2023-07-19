@@ -1,6 +1,6 @@
 greenlet==2.0.1
-grpcio==1.51.1
-grpcio-tools==1.51.1
+grpcio==1.56.0
+grpcio-tools==1.56.0
 importlib-metadata==5.2.0
 protobuf==4.21.12
 protobuf3-to-dict==0.1.5
