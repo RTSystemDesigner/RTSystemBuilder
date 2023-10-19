@@ -144,7 +144,8 @@ namespace RTSystemBuilder {
     }
 
     public bool updateContents(string target, string repo, string path, string contents, string message) {
-      string checkUri = "https://api.github.com/repos/" + target + "/" + repo + "/contents/" + path;
+      //string checkUri = "https://api.github.com/repos/" + target + "/" + repo + "/contents/" + path;
+      string checkUri = "https://api.github.com/repos/" + target + "/" + repo + "/contents/README.md";
 
       string strSha = "";
       try {
