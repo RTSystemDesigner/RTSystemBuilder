@@ -7,7 +7,7 @@
 * リポジトリ上のRTシステムを簡単にwasanbon binderに追加
 
 # 仕様
-・OS : Windows
+* OS : Windows
 
 # ドキュメント
 **マニュアル**
